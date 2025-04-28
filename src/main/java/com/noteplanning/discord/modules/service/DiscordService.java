@@ -13,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
@@ -37,17 +38,17 @@ public class DiscordService {
 
     private String formatMessage(AbacatePayWebhookDTO payload) throws JsonProcessingException {
         return objectMapper.writeValueAsString(new DiscordMessage(
-                "**VENDA REALIZADA** 🎉\n\n" +
-                        "**Preço**: R$ " + payload.getData().getPayment().getAmount() + "\n\n" +
-                        "**Dados do Comprador**: \n" +
-                        "**Nome**: " + payload.getData().getBilling().getCustomer().getMetadata().getName() + "\n" +
-                        "**E-mail**: " + payload.getData().getBilling().getCustomer().getMetadata().getEmail() + "\n\n" +
-                        "**Data da Compra**: " + formatDate() + "\n\n"
+                "🎉 **VENDA REALIZADA** 🎉\n\n" +
+                        "Preço: **R$ " + payload.getData().getPayment().getAmount() + "**\n\n" +
+                        "Nome completo: **" + payload.getData().getBilling().getCustomer().getMetadata().getName() + "**\n" +
+                        "Número de telefone: **" + payload.getData().getBilling().getCustomer().getMetadata().getCellphone() + "**\n" +
+                        "Endereço de e-mail: **" + payload.getData().getBilling().getCustomer().getMetadata().getEmail() + "**\n\n" +
+                        "Data da Compra: " + formatDate() + "**\n\n"
         ));
     }
     private String formatDate() {
         DateTimeFormatter logFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy 'às' HH:mm");
-        return LocalDateTime.now().format(logFormatter);
+        return LocalDateTime.now(ZoneId.of("America/Sao_Paulo")).format(logFormatter);
     }
 
     private record DiscordMessage(String content) {}
