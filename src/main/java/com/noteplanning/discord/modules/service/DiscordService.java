@@ -39,8 +39,8 @@ public class DiscordService {
 
     private String formatMessage(AbacatePayWebhookDTO payload) throws JsonProcessingException {
         return objectMapper.writeValueAsString(new DiscordMessage(
-                "\n\n🎉 **VENDA REALIZADA** 🎉\n\n" +
-                        "Preço: **R$ " + formatCurrency(payload.getData().getPayment().getAmount()) + "**\n\n" +
+                "🎉 **VENDA REALIZADA** 🎉\n\n" +
+                        "Preço: **" + formatCurrency(payload.getData().getPayment().getAmount()) + "**\n\n" +
                         "Nome completo: **" + payload.getData().getBilling().getCustomer().getMetadata().getName() + "**\n" +
                         "Número de telefone: **" + payload.getData().getBilling().getCustomer().getMetadata().getCellphone() + "**\n" +
                         "Endereço de e-mail: **" + payload.getData().getBilling().getCustomer().getMetadata().getEmail() + "**\n\n" +
