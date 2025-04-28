@@ -15,7 +15,7 @@ public class DiscordService {
 
     public void sendToDiscord(String message) {
         DiscordWebhookMessage discordMessage = new DiscordWebhookMessage();
-        discordMessage.setMessage("📢 **Novo Evento Abacate Pay**\n");
+        discordMessage.setMessage("📢 **Novo Evento Abacate Pay**\n" + message);
         restTemplate.postForObject(webhookUrl, discordMessage, String.class);
     }
 
