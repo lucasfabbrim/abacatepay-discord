@@ -32,10 +32,17 @@ public class WebhookAbacatePayController {
         }
 
         try {
+            // Log para debug
+            System.out.println("Payload recebido: " + payload);
+
+            // Processe o payload conforme necessário
             discordService.sendToDiscord(payload);
-            return ResponseEntity.ok("Webhook recebido com sucesso");
+
+            return ResponseEntity.ok("Webhook processado com sucesso");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro no processamento");
+            e.printStackTrace(); // Adicione logging adequado
+            return ResponseEntity.internalServerError()
+                    .body("Erro no processamento: " + e.getMessage());
         }
     }
 }
