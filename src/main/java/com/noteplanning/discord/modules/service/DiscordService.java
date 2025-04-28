@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -38,17 +39,25 @@ public class DiscordService {
 
     private String formatMessage(AbacatePayWebhookDTO payload) throws JsonProcessingException {
         return objectMapper.writeValueAsString(new DiscordMessage(
-                "🎉 **VENDA REALIZADA** 🎉\n\n" +
-                        "Preço: **R$ " + payload.getData().getPayment().getAmount() + "**\n\n" +
+                "\n\n🎉 **VENDA REALIZADA** 🎉\n\n" +
+                        "Preço: **R$ " + formatCurrency(payload.getData().getPayment().getAmount()) + "**\n\n" +
                         "Nome completo: **" + payload.getData().getBilling().getCustomer().getMetadata().getName() + "**\n" +
                         "Número de telefone: **" + payload.getData().getBilling().getCustomer().getMetadata().getCellphone() + "**\n" +
                         "Endereço de e-mail: **" + payload.getData().getBilling().getCustomer().getMetadata().getEmail() + "**\n\n" +
-                        "Data da Compra: " + formatDate() + "**\n\n"
+                        "Data da Compra: **" + formatDate() + "**\n\n"
         ));
     }
     private String formatDate() {
         DateTimeFormatter logFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy 'às' HH:mm");
         return LocalDateTime.now(ZoneId.of("America/Sao_Paulo")).format(logFormatter);
+    }
+
+    private String formatCurrency(Double amount) {
+        BigDecimal price = BigDecimal.valueOf(amount)
+                .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+
+        NumberFormat numberFormat = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+        return numberFormat.format(price);
     }
 
     private record DiscordMessage(String content) {}
